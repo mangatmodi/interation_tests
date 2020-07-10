@@ -6,10 +6,11 @@ import (
 	"testing"
 )
 
+//Here we combine steps to create test suite
 func TestCalculator(t *testing.T) {
 	TestCase{
 		ctx:   NewTestContext(t, "Performs divide by 0"),
-		steps: []Step{TwoRandomNumbers, DivideStep, VerifyNoError},
+		steps: []Step{TwoRandomNumbers, SetB(0), DivideStep, VerifyNoError},
 	}.Run()
 
 	TestCase{
@@ -18,11 +19,17 @@ func TestCalculator(t *testing.T) {
 	}.Run()
 }
 
+var SetB StepWithArgs = func(arg interface{}) Step {
+	b := arg.(int)
+	return func(t TestContext) {
+		t.fixture["b"] = b
+	}
+}
+
+//Define steps.
 var TwoRandomNumbers Step = func(t TestContext) {
-	a := rand.Intn(10)
-	b := 0
-	t.fixture["a"] = a
-	t.fixture["b"] = b
+	t.fixture["a"] = rand.Intn(10)
+	t.fixture["b"] = rand.Intn(10)
 }
 
 var DivideStep Step = func(t TestContext) {

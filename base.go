@@ -25,6 +25,8 @@ type TestCase struct {
 	steps []Step
 }
 
+type StepWithArgs func(arg interface{}) Step
+
 func (t TestCase) Run() {
 	for _, j := range t.steps {
 		j(t.ctx)
